@@ -1,15 +1,19 @@
 package hei.school.async.service;
 
 import hei.school.async.dto.ImageDTO;
+import hei.school.async.entity.ImageEntity;
 import hei.school.async.repository.ImageRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Base64;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -38,7 +42,11 @@ public class ImageService {
         bwImage.flush();
         originalImage.flush();
 
-
+        saveImageNameAndEmailSender(imageAndEmail);
         return Base64.getEncoder().encodeToString(imageBytes);
+    }
+
+    public void saveImageNameAndEmailSender (ImageDTO imageDTO) {
+        imageRepository.save(new ImageEntity(UUID.randomUUID().toString(),imageDTO.getFile().getName(),imageDTO.getEmail(), Instant.now()));
     }
 }
