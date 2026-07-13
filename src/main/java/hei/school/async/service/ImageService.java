@@ -9,13 +9,14 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Base64;
 
 @Service
 @AllArgsConstructor
 public class ImageService {
     private ImageRepository imageRepository;
 
-    public byte[] processAndStoreImage(ImageDTO imageAndEmail) throws IOException {
+    public String processAndConvertToBase64(ImageDTO imageAndEmail) throws IOException {
         if (imageAndEmail.getFile().isEmpty()) {
             throw new IllegalArgumentException("Empty file");
         }
@@ -32,10 +33,12 @@ public class ImageService {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(bwImage, "jpg", baos);
+        byte[] imageBytes = baos.toByteArray();
 
         bwImage.flush();
         originalImage.flush();
 
-        return baos.toByteArray();
+
+        return Base64.getEncoder().encodeToString(imageBytes);
     }
 }
