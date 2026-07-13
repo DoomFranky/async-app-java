@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -48,5 +49,9 @@ public class ImageService {
 
     public void saveImageNameAndEmailSender (ImageDTO imageDTO) {
         imageRepository.save(new ImageEntity(UUID.randomUUID().toString(),imageDTO.getFile().getName(),imageDTO.getEmail(), Instant.now()));
+    }
+
+    public List<ImageEntity> findAllExistingImage() {
+        return imageRepository.findAll();
     }
 }
