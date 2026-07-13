@@ -11,6 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Setter
 public class ImageDTO {
-    private MultipartFile file;
-    private String email;
+  private MultipartFile file;
+  private String email;
 }
