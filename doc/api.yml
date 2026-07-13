@@ -1,0 +1,86 @@
+openapi: 3.0.3
+info:
+  title: API de Gestion et Transformation d'Images
+  description: API permettant de transformer des images en noir et blanc et de lister les métadonnées des images traitées.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/
+
+paths:
+  /images/black-and-white:
+    post:
+      summary: Transformer une image en noir et blanc et renvoyer un message
+      description: Reçoit une image encodée en Base64 et l'adresse email de l'utilisateur dans le corps de la requête JSON. Envoie un mail contenant un lien de téléchargement.
+      operationId: uploadAndReturnHtml
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageUploadRequest'
+      responses:
+        '200':
+          description: Succès - Page HTML générée contenant l'image et le bouton de téléchargement.
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "The mail as been send"
+        '500':
+          description: Erreur interne lors du traitement ou du décodage de l'image.
+
+  /images:
+    get:
+      summary: Récupérer la liste de toutes les images
+      description: Retourne une liste d'objets contenant les métadonnées de toutes les images traitées (ID, nom du fichier, email associé et date de création).
+      operationId: findAllImages
+      responses:
+        '200':
+          description: Liste des images récupérée avec succès.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ImageResponse'
+
+components:
+  schemas:
+    ImageUploadRequest:
+      type: object
+      required:
+        - email
+        - file
+      properties:
+        email:
+          type: string
+          format: email
+          example: randy@example.com
+          description: L'adresse email de l'utilisateur qui soumet l'image.
+        file:
+          type: string
+          description: L'image convertie en chaîne de caractères encodée en Base64.
+          example: "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wB..."
+
+    ImageResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+          description: Identifiant unique de l'image en base de données.
+        fileName:
+          type: string
+          example: "550e8400-e29b-41d4-a716-446655440000_photo.jpg"
+          description: Nom unique attribué au fichier généré ou d'origine.
+        email:
+          type: string
+          format: email
+          example: randy@example.com
+          description: L'email de l'utilisateur lié à cette image.
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-07-13T09:41:50Z"
+          description: Date et heure de création/traitement de l'image.
